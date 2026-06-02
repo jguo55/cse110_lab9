@@ -5,6 +5,13 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+<script>
+  window.TrackJS && TrackJS.install({ 
+    token: "514634267c034165b13ad847246c97b1"
+    // for more configuration options, see https://docs.trackjs.com
+  });
+</script>
   <title>Lab 9</title>
 
   <style>
@@ -88,6 +95,13 @@
   </main>
 
   <script>
+    class EvalError extends Error {
+        constructor(message) {
+        super(message); // (1)
+        this.name = "EvalError"; // (2)
+      }
+    }
+
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -95,14 +109,108 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      if(!firstNum || !secondNum) {
+          throw new EvalError("Fields cannot be blank")
+      }
+      try {
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch (error) {
+          throw error //for the global error triggering
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
-  </script>
+    let groupLevel = 0;
+    const users = [
+      {name: "Alex", age: 15},
+      {name: "Bob", age: 18},
+      {name: "Cassie", age: 23},
+      {name: "David", age: 17}
+    ]
+
+    errorBtns[0].addEventListener('click', () => {
+      console.log("console log")
+    })
+
+    errorBtns[1].addEventListener('click', () => {
+      let error = new Error("This is a JS Error")
+      console.error(error)
+    })
+
+    errorBtns[2].addEventListener('click', () => {
+      console.count(`Count`)
+    })
+
+    errorBtns[3].addEventListener('click', () => {
+      console.warn(`console warn`)
+    })
+
+    errorBtns[4].addEventListener('click', () => {
+      for (const user of users) {
+        console.assert(user.age >= 18, `${user.name} is not an adult`)
+      }
+    })
+
+    errorBtns[5].addEventListener('click', () => {
+      console.clear();
+    })
+
+    errorBtns[10].addEventListener('click', () => {
+      console.table(users)
+    })
+
+    errorBtns[6].addEventListener('click', () => {
+      console.dir(user)
+    })
+
+    errorBtns[7].addEventListener('click', () => {
+      console.dirxml(user)
+    })
+
+    errorBtns[8].addEventListener('click', () => {
+      groupLevel = groupLevel + 1;
+      console.group(`Level ${groupLevel}`)
+    })
+
+    errorBtns[9].addEventListener('click', () => {
+      if(groupLevel > 0) {
+        groupLevel = groupLevel - 1;
+        console.groupEnd(`Level ${groupLevel}`)
+      }
+    })
+
+    errorBtns[11].addEventListener('click', () => {
+      console.time("timer")
+    })
+
+    errorBtns[12].addEventListener('click', () => {
+      console.timeEnd("timer")
+    })
+
+    errorBtns[13].addEventListener('click', () => {
+      function one() {
+        two()
+      }
+
+      function two() {
+        console.trace("hi")
+      }
+
+      two()
+    })
+
+    errorBtns[14].addEventListener('click', () => {
+      throw new Error("hi")
+    })
+
+    window.onerror = function (message, source, lineno, colno, error) {
+      console.log("error occured somewhere")
+    }
+
+  </script  >
 </body>
 
 </html>
